@@ -60,14 +60,13 @@ async def solve_slau(conn, message):
         print(sum)
 
     data = ''
-    for i in range(M):
+    for i in range(N):
         data += str(x[i])
         data += ' '
 
     response = {
         "task" : "solve", 
         "column" : message["column"],
-        "row" : message["row"],
         "solutions" : data.split()
     }
 
