@@ -12,7 +12,7 @@ from random import random
 import json
 import socket
 
-HOST = '192.168.242.136'
+HOST = '127.0.0.1'
 PORT = 6666
 LENGTH_BUFFER = 10**8
 
@@ -34,7 +34,7 @@ class CustomDialog(QtWidgets.QDialog):
         self.layout.addWidget(self.buttonBox)
         self.setLayout(self.layout)
 
-class TableModel(QtCore.QAbstractTableModel):
+class TableModel2D(QtCore.QAbstractTableModel):
     def __init__(self, data, headerdata, parent=None):
         QtCore.QAbstractTableModel.__init__(self, parent)
         self._data = data
@@ -55,6 +55,37 @@ class TableModel(QtCore.QAbstractTableModel):
     def setData(self, index, value, role):
         if role == Qt.ItemDataRole.EditRole and index.isValid():
             self._data[index.row()][index.column()] = value
+            return True
+        return False
+    
+    def headerData(self, col, orientation, role):
+        if orientation == Qt.Orientation.Horizontal and role == Qt.ItemDataRole.DisplayRole:
+            return self._headerdata[col]
+    
+    def flags(self, index):
+        return Qt.ItemFlag.ItemIsSelectable | Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsEditable 
+
+class TableModel(QtCore.QAbstractTableModel):
+    def __init__(self, data, headerdata, parent=None):
+        QtCore.QAbstractTableModel.__init__(self, parent)
+        self._data = data
+        self._headerdata = headerdata
+
+    def rowCount(self, parent):
+        return 1
+    
+    def columnCount(self, parent):
+        return len(self._data)
+
+    def data(self, index, role=Qt.ItemDataRole.DisplayRole):
+        if index.isValid():
+            if role == Qt.ItemDataRole.DisplayRole or role == Qt.ItemDataRole.EditRole:
+                value = self._data[index.column()]
+                return value
+            
+    def setData(self, index, value, role):
+        if role == Qt.ItemDataRole.EditRole and index.isValid():
+            self._data[index.column()] = value
             return True
         return False
     
@@ -118,7 +149,7 @@ class Window(QtWidgets.QWidget):
         ]            
         
 
-        self.coefs_model = TableModel(self.coefs, self.header_coefs)
+        self.coefs_model = TableModel2D(self.coefs, self.header_coefs)
         self.coefs_table.setModel(self.coefs_model)
 
         self.coefs_lable = QtWidgets.QLabel(self)
@@ -136,7 +167,7 @@ class Window(QtWidgets.QWidget):
         ]
 
         self.solves = [
-            ['1', '2', '2', '4']
+            [1.0, 2.0, 2.0, 4.0]
         ]
          
 
@@ -310,8 +341,14 @@ class Window(QtWidgets.QWidget):
 
             print(header_temp)
 
+            temp = []
+            for i in  request["solutions"]:
+                temp += [float(i)]
+
+            print(temp)
+
             self.solves_model._headerdata = header_temp
-            self.solves_model._data = request["solutions"]
+            self.solves_model._data = temp
             self.solves_model.layoutChanged.emit()
 
             #s.close()
