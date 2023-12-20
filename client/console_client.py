@@ -4,7 +4,7 @@ import socket
 from numpy import empty
 from random import random
 
-HOST = '127.0.0.1'
+HOST = '192.168.242.136'
 PORT = 6666
 LENGTH_BUFFER = 10**8
 
@@ -38,6 +38,8 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             "coefs" : coefs.strip(),
             "coefs_free" : coefs_free.strip()
         }
+        print(message)
+
         data = json.dumps(message)
         s.sendall((bytes(data, encoding="utf-8")))
 

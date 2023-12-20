@@ -3,7 +3,7 @@ import json
 import asyncio
 from numpy import zeros, dot, empty
 
-HOST = '0.0.0.0'
+HOST = '192.168.242.136'
 PORT = 6666
 LENGTH_BUFFER = 10**8
 
