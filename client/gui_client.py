@@ -121,12 +121,15 @@ class Window(QtWidgets.QWidget):
         self.button_load_slau = QtWidgets.QPushButton("Загрузить СЛАУ")
         self.button_set_unknowns = QtWidgets.QPushButton("Задать количество неизвестных")
         self.button_set_equations = QtWidgets.QPushButton("Задать количество уравнений")
+        self.button_random_caef = QtWidgets.QPushButton("Мешалка слау")
 
         self.button_layout.addWidget(self.button_solve_slau)
         #self.button_layout.addWidget(self.button_save_slau)
         #self.button_layout.addWidget(self.button_load_slau)
         self.button_layout.addWidget(self.button_set_unknowns)
         self.button_layout.addWidget(self.button_set_equations)
+        self.button_layout.addWidget(self.button_random_caef)
+        
 
 
         self.slau_layout = QtWidgets.QVBoxLayout()
@@ -192,6 +195,7 @@ class Window(QtWidgets.QWidget):
         self.button_set_unknowns.clicked.connect(self.set_unknowns)
         self.button_set_equations.clicked.connect(self.set_equations)
         self.button_solve_slau.clicked.connect(self.solve_slau)
+        self.button_random_caef.clicked.connect(self.randomize)
 
     def set_unknowns(self):
         unknowns, ok = QtWidgets.QInputDialog.getInt(self, "Установить количество решений", "Введите количество решений", min=1)
@@ -352,6 +356,12 @@ class Window(QtWidgets.QWidget):
             self.solves_model.layoutChanged.emit()
 
             #s.close()
+
+    def randomize(self):
+        for i in range(len(self.coefs_model._data)):
+            for j in range(len(self.coefs_model._data[0])):
+                self.coefs_model._data[i][j] = random()
+        self.coefs_model.layoutChanged.emit()
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
